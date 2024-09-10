@@ -1,7 +1,7 @@
-# mintingCandy
+## mint
 
 git clone
 
 Запуск: npm i
 
-Вызов: node nftMint.js
+Вызов: node mint.js
