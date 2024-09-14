@@ -6,6 +6,7 @@ import {
   signerPayer,
   publicKey,
   createSignerFromKeypair,
+  PublicKey,
 } from "@metaplex-foundation/umi";
 import { setComputeUnitLimit } from "@metaplex-foundation/mpl-toolbox";
 import { mintV2 } from "@metaplex-foundation/mpl-candy-machine";
@@ -20,7 +21,7 @@ let signer = {
     73, 15, 65, 124, 151, 148, 108, 7, 243, 83, 36, 25, 244, 118, 175, 33, 145,
     230, 56, 130, 119, 68, 58, 98, 152, 41, 83, 68, 11, 53, 122,
   ]),
-  publicKey: "BFTathbmoN74NEDnxbKbh8KNs7SahtxkKsDU9Ca69vzm",
+  publicKey: "BFTathbmoN74NEDnxbKbh8KNs7SahtxkKsDU9Ca69vzm" as PublicKey,
 };
 console.log("sig: ", signer.secretKey);
 const umi = createUmi(rpcEndpoint);
@@ -31,12 +32,19 @@ umi
   .use(signerIdentity(mySigner))
   .use(mplCandyMachine());
 
+interface GetMintTransactionParams {
+  candyMachineAddress: string;
+  nftMintAddress: string;
+  collectionMintAddress: string;
+  collectionUpdateAuthorityAddress: string;
+}
+
 async function getMintTransaction({
   candyMachineAddress,
   nftMintAddress,
   collectionMintAddress,
   collectionUpdateAuthorityAddress,
-}) {
+}: GetMintTransactionParams): Promise<void> {
   try {
     const candyMachinePubKey = publicKey(candyMachineAddress);
     const nftMintPubKey = publicKey(nftMintAddress);
@@ -58,6 +66,7 @@ async function getMintTransaction({
     });
 
     let res = await mint.sendAndConfirm(umi);
+    console.log("Mint result: ", res);
   } catch (error) {
     console.error("Detailed error:", JSON.stringify(error));
 
